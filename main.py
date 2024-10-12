@@ -38,18 +38,20 @@ def calculate_ehg(income):
         return 0
 
 # Function to calculate CPF Housing Grant based on flat size
-def calculate_cpf_grant(flat_size):
-    if flat_size == '4-room or smaller':
-        return 50000
-    elif flat_size == '5-room':
-        return 40000
-    else:
-        return 0
+def calculate_cpf_grant(flat_size, first_time_buyer):
+    if first_time_buyer == 'Yes':
+        if flat_size == '4-room or smaller':
+            return 50000
+        elif flat_size == '5-room':
+            return 40000
+    return 0
 
 # Function to calculate Proximity Housing Grant based on distance
-def calculate_phg(proximity):
+def calculate_phg(proximity, buying_with_family):
     if proximity == 'within 4km':
         return 30000
+    elif buying_with_family:
+        return 20000
     else:
         return 0
 
@@ -59,25 +61,28 @@ st.title("HDB Resale Grant Eligibility & Estimator")
 # Input form for user details
 with st.form("grant_form"):
     st.subheader("Provide Your Details")
+    citizenship = st.selectbox("Citizenship", ['Both Singaporeans', 'Singaporean & PR', 'PR'])
+    marital_status = st.selectbox("Marital Status", ['Married', 'Single'])
     income = st.number_input("Household Monthly Income (SGD)", min_value=0, step=500)
     flat_size = st.selectbox("Flat Type", ['4-room or smaller', '5-room', 'Other'])
     first_time_buyer = st.radio("Are you a first-time buyer?", ['Yes', 'No'])
     proximity = st.radio("Do you live within 4km of your parents or children?", ['within 4km', 'more than 4km'])
+    buying_with_family = st.radio("Are you buying the flat with family (parents/children)?", ['Yes', 'No'])
     submit = st.form_submit_button("Check Eligibility")
 
 # If the form is submitted, calculate eligibility and grants
 if submit:
     # Calculate the grants
     ehg = calculate_ehg(income)
-    cpf_grant = calculate_cpf_grant(flat_size)
-    phg = calculate_phg(proximity)
+    cpf_grant = calculate_cpf_grant(flat_size, first_time_buyer)
+    phg = calculate_phg(proximity, buying_with_family == 'Yes')
 
     # Display the results
     st.subheader("Grant Eligibility Results")
     if first_time_buyer == 'Yes':
         st.write(f"**CPF Housing Grant**: SGD {cpf_grant}")
     else:
-        st.write("You are not eligible for the CPF Housing Grant (for resale flats) as you're not a first-time buyer.")
+        st.write("You are not eligible for the CPF Housing Grant as you're not a first-time buyer.")
     
     st.write(f"**Enhanced CPF Housing Grant (EHG)**: SGD {ehg}")
     st.write(f"**Proximity Housing Grant (PHG)**: SGD {phg}")
