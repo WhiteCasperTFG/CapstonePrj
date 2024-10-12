@@ -18,13 +18,8 @@ OPENAI_KEY = os.getenv('OPENAI_API_KEY')  # Get the API key from the environment
 # Pass the API Key to the OpenAI Client
 openai.api_key = OPENAI_KEY  # Set the OpenAI API key
 
-
 # Load grant amounts from CSV file
 grant_data = pd.read_csv('data/grant_amounts.csv')
-
-# Load API key from a file
-with open('api_key.txt', 'r') as f:
-    openai.api_key = f.read().strip()
 
 def get_llm_response(user_input):
     # Create the prompt for the model
