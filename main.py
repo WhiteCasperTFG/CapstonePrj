@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="Homepage", page_icon="🏠")
 
 # Specify the path to the background image
-background_image = "image/homepage.jpg"  # Ensure this path is correct relative to your project structure
+background_image = "images/homepage.jpg"  # Ensure this path is correct relative to your project structure
 
 # Add custom CSS for the background image
 st.markdown(
