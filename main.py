@@ -6,9 +6,13 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import tiktoken
 
-# Check if the password is correct.  
-if not check_password():  
+
+# Check if the password is correct.
+if not check_password():
     st.stop()
+
+# Your Streamlit app code here
+st.title("Welcome to the Secure Streamlit App!")
 
 # if load_dotenv('.env'):
 #    # for local development
