@@ -136,45 +136,82 @@ buying_with_family = st.radio("Are you buying the flat with family (parents/chil
 st.subheader("Grant Eligibility Criteria")
 st.write("### Enhanced CPF Housing Grant (EHG) Amounts based on Monthly Household Income:")
 
-# Load EHG data from CSV file
-ehg_data = pd.read_csv('data/Enhance_CPF_Housing_Grant_Data.csv')
+# Submit button to process the inputs
+if st.button("Check Eligibility"):
+    # Ineligibility checks
+    ineligible_reasons = []
+    
+    # Citizenship check
+    if citizenship == 'Foreigner':
+        ineligible_reasons.append("Foreigners are not eligible to buy HDB flats.")
+    elif marital_status == 'Married' and spouse_citizenship == 'Foreigner':
+        ineligible_reasons.append("Both buyers must be Singaporean citizens or Permanent Residents to qualify for grants.")
 
-# Extract income and EHG data from the DataFrame
-income_brackets = ehg_data['Income'].values
-ehg_single = ehg_data['Single_EHG'].values
-ehg_married = ehg_data['Married_EHG'].values
+    # Income check
+    income_limit = 8000  # Example limit for grant eligibility
+    if income > income_limit:
+        ineligible_reasons.append("Your household income exceeds the limit for grant eligibility.")
+    
+    # First-time buyer check
+    if first_time_buyer == 'No':
+        if flat_size != 'Other':
+            ineligible_reasons.append("You are not eligible for the CPF Housing Grant as you're not a first-time buyer.")
 
-# Create a bar chart
-fig, ax = plt.subplots(figsize=(10, 6))
-width = 0.35  # the width of the bars
+        # Adjusted Family Grant ineligibility logic
+        if marital_status == 'Married' and buying_with_family == 'No':
+            ineligible_reasons.append("You are not eligible for the Family Grant as you must be purchasing with parents or children to qualify.")
 
-# Bar positions
-x_single = np.arange(len(income_brackets))
-x_married = x_single + width
+    # Calculate grants if eligible
+    if not ineligible_reasons:
+        ehg = calculate_ehg(income, marital_status)
+        cpf_grant = calculate_cpf_grant(flat_size, first_time_buyer)
+        phg = calculate_phg(proximity, buying_with_family == 'Yes')
 
-# Plotting the bars
-bars1 = ax.bar(x_single, ehg_single, width, label='Single', color='blue')
-bars2 = ax.bar(x_married, ehg_married, width, label='Married', color='green')
+        # Display the results
+        st.subheader("Grant Eligibility Results")
+        
+        if first_time_buyer == 'Yes':
+            st.write(f"**CPF Housing Grant**: SGD {cpf_grant}")
+        else:
+            st.write("You are not eligible for the CPF Housing Grant as you're not a first-time buyer.")
+        
+        st.write(f"**Enhanced CPF Housing Grant (EHG)**: SGD {ehg}")
+        st.write(f"**Proximity Housing Grant (PHG)**: SGD {phg}")
 
-# Adding labels and title
-ax.set_xlabel('Monthly Household Income (SGD)')
-ax.set_ylabel('Enhanced CPF Housing Grant Amount (SGD)')
-ax.set_title('Enhanced CPF Housing Grant Amounts by Income Bracket')
-ax.set_xticks(x_single + width / 2)
-ax.set_xticklabels(income_brackets)
-ax.legend()
+        total_grant = ehg + cpf_grant + phg
+        st.write(f"**Total Estimated Grant Amount**: SGD {total_grant}")
 
-# Annotate bars with values
-for bar in bars1:
-    yval = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width() / 2, yval, f'{yval}', ha='center', va='bottom')
+        # Load EHG data from the CSV file
+        ehg_data = pd.read_csv('data/ehg_data.csv')
 
-for bar in bars2:
-    yval = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width() / 2, yval, f'{yval}', ha='center', va='bottom')
+        # Filter the data based on marital status
+        if marital_status == 'Single':
+            filtered_data = ehg_data[ehg_data['Marital Status'] == 'Single']
+        else:
+            filtered_data = ehg_data[ehg_data['Marital Status'] == 'Married']
 
-# Display the chart in Streamlit
-st.pyplot(fig)
+        # Plotting the chart based on filtered data
+        st.subheader("Grant Visualization")
+        fig, ax = plt.subplots()
+        ax.bar(filtered_data['Grant Type'], filtered_data['Amount (SGD)'])
+        ax.set_title('Grant Distribution')
+        ax.set_xlabel('Grant Type')
+        ax.set_ylabel('Amount (SGD)')
+        st.pyplot(fig)
+
+        # Suggestions for optimizing eligibility
+        if total_grant == 0:
+            if income == 0:
+                st.warning("You have a household income of SGD 0. You may still be eligible for some grants, especially if you are a first-time buyer. Consider reaching out to HDB for detailed assistance.")
+            else:
+                st.warning("You are not eligible for any grants. Consider adjusting your inputs (e.g., income, proximity) to see how it affects grant eligibility.")
+        else:
+            st.success(f"Based on your input, you could receive up to SGD {total_grant} in grants for your HDB resale flat purchase.")
+    else:
+        # Display ineligibility reasons
+        st.error("You are not eligible for HDB grants due to the following reasons:")
+        for reason in ineligible_reasons:
+            st.write(f"- {reason}")
 
 # Step 7: Submit button to process the inputs
 if st.button("Check Eligibility"):
