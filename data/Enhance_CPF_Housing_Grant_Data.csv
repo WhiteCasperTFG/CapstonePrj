@@ -1,33 +1,43 @@
-Marital Status,Income,EHG Amount (SGD)
-Single,1500,40000
-Single,2000,37500
-Single,2500,35000
-Single,3000,32500
-Single,3500,30000
-Single,4000,27500
-Single,4500,25000
-Single,5000,22500
-Single,5500,20000
-Single,6000,17500
-Single,6500,15000
-Single,7000,12500
-Single,7500,10000
-Single,8000,7500
-Single,8500,5000
-Single,9000,2500
-Married,1500,80000
-Married,2000,75000
-Married,2500,70000
-Married,3000,65000
-Married,3500,60000
-Married,4000,55000
-Married,4500,50000
-Married,5000,45000
-Married,5500,40000
-Married,6000,35000
-Married,6500,30000
-Married,7000,25000
-Married,7500,20000
-Married,8000,15000
-Married,8500,10000
-Married,9000,5000
+Grant Type,Marital Status,Income,EHG Amount (SGD)
+Enhanced CPF Housing Grant,Single,1500,40000
+Enhanced CPF Housing Grant,Single,2000,37500
+Enhanced CPF Housing Grant,Single,2500,35000
+Enhanced CPF Housing Grant,Single,3000,32500
+Enhanced CPF Housing Grant,Single,3500,30000
+Enhanced CPF Housing Grant,Single,4000,27500
+Enhanced CPF Housing Grant,Single,4500,25000
+Enhanced CPF Housing Grant,Single,5000,22500
+Enhanced CPF Housing Grant,Single,5500,20000
+Enhanced CPF Housing Grant,Single,6000,17500
+Enhanced CPF Housing Grant,Single,6500,15000
+Enhanced CPF Housing Grant,Single,7000,12500
+Enhanced CPF Housing Grant,Single,7500,10000
+Enhanced CPF Housing Grant,Single,8000,7500
+Enhanced CPF Housing Grant,Single,8500,5000
+Enhanced CPF Housing Grant,Single,9000,2500
+Enhanced CPF Housing Grant,Married,1500,80000
+Enhanced CPF Housing Grant,Married,2000,75000
+Enhanced CPF Housing Grant,Married,2500,70000
+Enhanced CPF Housing Grant,Married,3000,65000
+Enhanced CPF Housing Grant,Married,3500,60000
+Enhanced CPF Housing Grant,Married,4000,55000
+Enhanced CPF Housing Grant,Married,4500,50000
+Enhanced CPF Housing Grant,Married,5000,45000
+Enhanced CPF Housing Grant,Married,5500,40000
+Enhanced CPF Housing Grant,Married,6000,35000
+Enhanced CPF Housing Grant,Married,6500,30000
+Enhanced CPF Housing Grant,Married,7000,25000
+Enhanced CPF Housing Grant,Married,7500,20000
+Enhanced CPF Housing Grant,Married,8000,15000
+Enhanced CPF Housing Grant,Married,8500,10000
+Enhanced CPF Housing Grant,Married,9000,5000
+Family Grant,Married,1000,50000
+Family Grant,Married,2000,40000
+Family Grant,Married,3000,30000
+Family Grant,Married,4000,20000
+Family Grant,Married,5000,15000
+CPF Housing Grant,Single,2000,30000
+CPF Housing Grant,Single,3000,25000
+CPF Housing Grant,Married,1500,40000
+CPF Housing Grant,Married,2500,30000
+CPF Housing Grant,Married,3500,20000
