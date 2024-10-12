@@ -76,7 +76,7 @@ def calculate_ehg(income, marital_status):
             return 0
 
 # Function to calculate CPF Housing Grant based on flat size and citizenship
-def calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship):
+def calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship, spouse_citizenship=None):
     if marital_status == 'Single':
         if citizenship == 'Singaporean':
             if first_time_buyer == 'Yes':
@@ -88,10 +88,16 @@ def calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship
             return 0  # Single PRs aren't eligible for CPF Housing Grants
     else:
         if first_time_buyer == 'Yes':
-            if flat_size == '4-room or smaller':
-                return 50000
-            elif flat_size == '5-room':
-                return 40000
+            if citizenship == 'Singaporean' and spouse_citizenship == 'Singaporean':
+                if flat_size == '4-room or smaller':
+                    return 50000
+                elif flat_size == '5-room':
+                    return 40000
+            elif citizenship == 'Singaporean' and spouse_citizenship == 'PR':
+                if flat_size == '4-room or smaller':
+                    return 40000
+                elif flat_size == '5-room':
+                    return 30000
     return 0
 
 # Function to calculate Proximity Housing Grant based on proximity and marital status
@@ -114,20 +120,32 @@ st.title("HDB Resale Grant Eligibility & Estimator")
 # Input form for user details
 with st.form("grant_form"):
     st.subheader("Provide Your Details")
-    citizenship = st.selectbox("Citizenship", ['Singaporean', 'PR'])
+    
+    # Step 1: Marital Status
     marital_status = st.selectbox("Marital Status", ['Married', 'Single'])
+
+    # Step 2: Citizenship based on marital status
+    if marital_status == 'Single':
+        citizenship = st.selectbox("Your Citizenship", ['Singaporean', 'PR'])
+        spouse_citizenship = None  # Not required for singles
+    else:
+        citizenship = st.selectbox("Your Citizenship", ['Singaporean', 'PR'])
+        spouse_citizenship = st.selectbox("Your Spouse's Citizenship", ['Singaporean', 'PR'])
+    
+    # Step 3: Other relevant details
     income = st.number_input("Household Monthly Income (SGD)", min_value=0, step=500)
     flat_size = st.selectbox("Flat Type", ['4-room or smaller', '5-room', 'Other'])
     first_time_buyer = st.radio("Are you a first-time buyer?", ['Yes', 'No'])
     proximity = st.radio("Do you live within 4km of your parents or children?", ['within 4km', 'more than 4km'])
     buying_with_family = st.radio("Are you buying the flat with family (parents/children)?", ['Yes', 'No'])
+    
     submit = st.form_submit_button("Check Eligibility")
 
 # If the form is submitted, calculate eligibility and grants
 if submit:
     # Calculate the grants
     ehg = calculate_ehg(income, marital_status)
-    cpf_grant = calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship)
+    cpf_grant = calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship, spouse_citizenship)
     phg = calculate_phg(proximity, buying_with_family == 'Yes', marital_status)
 
     # Display the results
