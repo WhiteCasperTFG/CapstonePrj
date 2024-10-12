@@ -60,14 +60,27 @@ with st.container():
         """
         st.markdown(button_html, unsafe_allow_html=True)
 
-# Display content based on the selected page
-if 'page' in st.session_state:
-    if st.session_state.page == "grant-calculator":
-        st.write("Welcome to the Grant Calculator!")
-        # Include the calculator functionality here.
-    elif st.session_state.page == "eligibility":
-        st.write("Eligibility information goes here!")
-    elif st.session_state.page == "button3":
-        st.write("You clicked Button 3!")
-    elif st.session_state.page == "button4":
-        st.write("You clicked Button 4!")
+# Handle redirection based on the selected page
+if 'page' not in st.session_state:
+    st.session_state.page = 'homepage'  # Set initial page to homepage
+
+if st.session_state.page == 'eligibility':
+    # Code for eligibility page
+    st.write("Welcome to the Eligibility Page!")
+    # You can include your eligibility code logic here.
+elif st.session_state.page == 'grant-calculator':
+    st.write("Welcome to the Grant Calculator!")
+    # Include the calculator functionality here.
+elif st.session_state.page == 'button3':
+    st.write("You clicked Button 3!")
+elif st.session_state.page == 'button4':
+    st.write("You clicked Button 4!")
+else:
+    # Default to homepage
+    st.session_state.page = 'homepage'
+
+# Check if any button was clicked
+if st.button("Eligibility"):
+    st.session_state.page = 'eligibility'
+    st.experimental_rerun()  # Rerun the app to update the page
+
