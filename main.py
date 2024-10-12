@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Function to calculate EHG (Enhanced CPF Housing Grant)
 def calculate_ehg(income, marital_status):
@@ -134,42 +135,46 @@ buying_with_family = st.radio("Are you buying the flat with family (parents/chil
 # Step 6: Display Grant Eligibility Criteria Visuals
 st.subheader("Grant Eligibility Criteria")
 st.write("### Enhanced CPF Housing Grant (EHG) Amounts based on Monthly Household Income:")
-st.write("""
-- **Single**:
-  - Income ≤ 1,500: SGD 40,000
-  - Income ≤ 2,000: SGD 37,500
-  - Income ≤ 2,500: SGD 35,000
-  - Income ≤ 3,000: SGD 32,500
-  - Income ≤ 3,500: SGD 30,000
-  - Income ≤ 4,000: SGD 27,500
-  - Income ≤ 4,500: SGD 25,000
-  - Income ≤ 5,000: SGD 22,500
-  - Income ≤ 5,500: SGD 20,000
-  - Income ≤ 6,000: SGD 17,500
-  - Income ≤ 6,500: SGD 15,000
-  - Income ≤ 7,000: SGD 12,500
-  - Income ≤ 7,500: SGD 10,000
-  - Income ≤ 8,000: SGD 7,500
-  - Income ≤ 8,500: SGD 5,000
-  - Income ≤ 9,000: SGD 2,500
-- **Married**:
-  - Income ≤ 1,500: SGD 80,000
-  - Income ≤ 2,000: SGD 75,000
-  - Income ≤ 2,500: SGD 70,000
-  - Income ≤ 3,000: SGD 65,000
-  - Income ≤ 3,500: SGD 60,000
-  - Income ≤ 4,000: SGD 55,000
-  - Income ≤ 4,500: SGD 50,000
-  - Income ≤ 5,000: SGD 45,000
-  - Income ≤ 5,500: SGD 40,000
-  - Income ≤ 6,000: SGD 35,000
-  - Income ≤ 6,500: SGD 30,000
-  - Income ≤ 7,000: SGD 25,000
-  - Income ≤ 7,500: SGD 20,000
-  - Income ≤ 8,000: SGD 15,000
-  - Income ≤ 8,500: SGD 10,000
-  - Income ≤ 9,000: SGD 5,000
-""")
+
+# Load EHG data from CSV file
+ehg_data = pd.read_csv('ehg_data.csv')
+
+# Extract income and EHG data from the DataFrame
+income_brackets = ehg_data['Income'].values
+ehg_single = ehg_data['Single_EHG'].values
+ehg_married = ehg_data['Married_EHG'].values
+
+# Create a bar chart
+fig, ax = plt.subplots(figsize=(10, 6))
+width = 0.35  # the width of the bars
+
+# Bar positions
+x_single = np.arange(len(income_brackets))
+x_married = x_single + width
+
+# Plotting the bars
+bars1 = ax.bar(x_single, ehg_single, width, label='Single', color='blue')
+bars2 = ax.bar(x_married, ehg_married, width, label='Married', color='green')
+
+# Adding labels and title
+ax.set_xlabel('Monthly Household Income (SGD)')
+ax.set_ylabel('Enhanced CPF Housing Grant Amount (SGD)')
+ax.set_title('Enhanced CPF Housing Grant Amounts by Income Bracket')
+ax.set_xticks(x_single + width / 2)
+ax.set_xticklabels(income_brackets)
+ax.legend()
+
+# Annotate bars with values
+for bar in bars1:
+    yval = bar.get_height()
+    ax.text(bar.get_x() + bar.get_width() / 2, yval, f'{yval}', ha='center', va='bottom')
+
+for bar in bars2:
+    yval = bar.get_height()
+    ax.text(bar.get_x() + bar.get_width() / 2, yval, f'{yval}', ha='center', va='bottom')
+
+# Display the chart in Streamlit
+st.pyplot(fig)
 
 # Step 7: Submit button to process the inputs
 if st.button("Check Eligibility"):
