@@ -1,7 +1,21 @@
+import os
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import openai  # Make sure to install openai library
+from dotenv import load_dotenv  # Import to load .env variables
+from helper_functions.utility import check_password  
+
+# Load the .env file for local development
+load_dotenv('.env')  # Load the environment variables from .env
+OPENAI_KEY = os.getenv('OPENAI_API_KEY')  # Get the API key from the environment
+
+# Pass the API Key to the OpenAI Client
+openai.api_key = OPENAI_KEY  # Set the OpenAI API key
+
+# Check if the password is correct.  
+if not check_password():  
+    st.stop()
 
 # Load grant amounts from CSV file
 grant_data = pd.read_csv('data/grant_amounts.csv')
