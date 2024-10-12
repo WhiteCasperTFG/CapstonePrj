@@ -137,7 +137,7 @@ st.subheader("Grant Eligibility Criteria")
 st.write("### Enhanced CPF Housing Grant (EHG) Amounts based on Monthly Household Income:")
 
 # Load EHG data from CSV file
-ehg_data = pd.read_csv('data/ehg_data.csv')
+ehg_data = pd.read_csv('data/Enhance_CPF_Housing_Grant_Data.csv')
 
 # Extract income and EHG data from the DataFrame
 income_brackets = ehg_data['Income'].values
