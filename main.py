@@ -15,7 +15,7 @@ API_KEY = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_kley=API_KEY)
 
 # Title of the app
-st.title("Streamlit Test App")
+st.title("Streamlit Test App 2")
 
 # Some basic text
 st.write("Hello, welcome to this Streamlit test app!")
