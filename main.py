@@ -39,7 +39,7 @@ def calculate_ehg(income, marital_status):
             return 2500
         else:
             return 0
-    else:
+    elif marital_status == 'Married':
         # Family calculation
         if income <= 1500:
             return 80000
@@ -75,6 +75,8 @@ def calculate_ehg(income, marital_status):
             return 5000
         else:
             return 0
+    else:
+        return 0
 
 # Function to calculate CPF Housing Grant
 def calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship, spouse_citizenship):
@@ -104,12 +106,12 @@ st.subheader("Provide Your Details")
 marital_status = st.selectbox("Marital Status", ['Married', 'Single'])
 
 # Step 2: Citizenship based on marital status
-citizenship = st.selectbox("Your Citizenship", ['Singaporean', 'PR'])
+citizenship = st.selectbox("Your Citizenship", ['Singaporean', 'Permanent Resident', 'Foreigner'])
 
 # Show "Your Spouse's Citizenship" only if married
 spouse_citizenship = None  # Initialize with None
 if marital_status == 'Married':
-    spouse_citizenship = st.selectbox("Your Spouse's Citizenship", ['Singaporean', 'PR'])
+    spouse_citizenship = st.selectbox("Your Spouse's Citizenship", ['Singaporean', 'Permanent Resident', 'Foreigner'])
 
 # Step 3: Other relevant details
 income = st.number_input("Household Monthly Income (SGD)", min_value=0, step=500)
@@ -124,9 +126,11 @@ if st.button("Check Eligibility"):
     ineligible_reasons = []
     
     # Citizenship check
-    if citizenship != 'Singaporean':
-        ineligible_reasons.append("You must be a Singaporean citizen to qualify for HDB grants.")
-    
+    if citizenship == 'Foreigner':
+        ineligible_reasons.append("Foreigners are not eligible to buy HDB flats.")
+    elif marital_status == 'Married' and spouse_citizenship == 'Foreigner':
+        ineligible_reasons.append("Both buyers must be Singaporean citizens or Permanent Residents to qualify for grants.")
+
     # Income check
     income_limit = 8000  # Example limit for grant eligibility
     if income > income_limit:
@@ -136,10 +140,6 @@ if st.button("Check Eligibility"):
     if first_time_buyer == 'No':
         if flat_size != 'Other':
             ineligible_reasons.append("You are not eligible for the CPF Housing Grant as you're not a first-time buyer.")
-    
-    # Spouse's citizenship check
-    if marital_status == 'Married' and spouse_citizenship != 'Singaporean':
-        ineligible_reasons.append("Both buyers must be Singaporean citizens to qualify for grants.")
     
     # Calculate grants if eligible
     if not ineligible_reasons:
