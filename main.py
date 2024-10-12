@@ -213,6 +213,22 @@ if st.button("Check Eligibility"):
 
 # Step 8: Display Financial Calculators
 st.subheader("Financial Calculators")
-st.write("Explore additional tools to help you understand your financial commitments.")
 
-# Additional financial calculators can be implemented here as needed
+# Example calculator for estimating monthly mortgage payments
+st.write("### Estimate Your Monthly Mortgage Payment")
+principal = st.number_input("Loan Amount (SGD)", min_value=0, step=1000)
+interest_rate = st.number_input("Annual Interest Rate (%)", min_value=0.0, max_value=100.0, step=0.1)
+loan_term = st.number_input("Loan Term (years)", min_value=1, step=1)
+
+if st.button("Calculate Mortgage Payment"):
+    monthly_rate = interest_rate / 100 / 12
+    num_payments = loan_term * 12
+    mortgage_payment = (principal * monthly_rate) / (1 - (1 + monthly_rate) ** -num_payments)
+    st.write(f"Estimated Monthly Mortgage Payment: SGD {mortgage_payment:.2f}")
+
+# Step 9: Additional Resources and Links
+st.subheader("Helpful Resources")
+st.write("Here are some resources for additional information on HDB grants and buying flats:")
+st.write("- [HDB Website](https://www.hdb.gov.sg)")
+st.write("- [CPF Housing Grant Information](https://www.cpf.gov.sg)")
+st.write("- [Financial Planning Tools](https://www.moneysmart.sg)")
