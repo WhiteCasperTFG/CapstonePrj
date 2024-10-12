@@ -178,7 +178,7 @@ if st.button("Check Eligibility"):
         st.write(f"**Total Estimated Grant Amount**: SGD {total_grant}")
 
         # Load EHG data from the CSV file
-        ehg_data = pd.read_csv('data/ehg_data.csv')
+        ehg_data = pd.read_csv('data/Enhance_CPF_Housing_Grant_Data.csv')
 
         # Filter the data based on marital status
         if marital_status == 'Single':
