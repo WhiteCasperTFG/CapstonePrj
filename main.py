@@ -3,39 +3,19 @@ import streamlit as st
 # Set the page configuration
 st.set_page_config(page_title="Homepage", page_icon="🏠")
 
-# Use a background image
-background_image = "images/homepage.jpg"
+# Specify the path to the background image
+background_image = "image/homepage.jpg"  # Ensure this path is correct relative to your project structure
 
-# Add custom CSS for the background image and button styling
+# Add custom CSS for the background image
 st.markdown(
     f"""
     <style>
     .stApp {{
         background-image: url({background_image});
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }}
-
-    .button-container {{
-        display: flex;
-        flex-direction: column;
-        gap: 20px; /* Spacing between buttons */
-        align-items: center; /* Center buttons horizontally */
-    }}
-
-    .stButton {{
-        width: 200px; /* Set a fixed width for buttons */
-        height: 50px; /* Set a fixed height for buttons */
-        font-size: 20px; /* Increase font size */
-        background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
-        border-radius: 10px; /* Rounded corners */
-        border: none; /* Remove border */
-        cursor: pointer; /* Change cursor to pointer */
+        background-size: cover; /* Cover the entire area */
+        background-repeat: no-repeat; /* No repeating */
+        background-attachment: fixed; /* Fixed background */
+        height: 100vh; /* Full viewport height */
     }}
     </style>
     """,
@@ -45,42 +25,36 @@ st.markdown(
 # Create a title for the app
 st.title("Welcome to the Grant Application Portal")
 
-# Create a container for the buttons
-with st.container():
-    button_container = st.empty()
-    with button_container:
-        # Create the button container div with the button-container class
-        button_html = """
-        <div class="button-container">
-            <button class="stButton" onclick="window.location.href='/grant-calculator'">Grant Calculator</button>
-            <button class="stButton" onclick="window.location.href='/eligibility'">Eligibility</button>
-            <button class="stButton" onclick="window.location.href='/button3'">Button 3</button>
-            <button class="stButton" onclick="window.location.href='/button4'">Button 4</button>
-        </div>
-        """
-        st.markdown(button_html, unsafe_allow_html=True)
+# Create buttons
+st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
+if st.button("Grant Calculator"):
+    st.session_state.page = "grant_calculator"
+    st.experimental_rerun()
+if st.button("Eligibility"):
+    st.session_state.page = "eligibility"
+    st.experimental_rerun()
+if st.button("Button 3"):
+    st.session_state.page = "button3"
+    st.experimental_rerun()
+if st.button("Button 4"):
+    st.session_state.page = "button4"
+    st.experimental_rerun()
+st.markdown('</div>', unsafe_allow_html=True)
 
-# Handle redirection based on the selected page
+# Check which page to display
 if 'page' not in st.session_state:
-    st.session_state.page = 'homepage'  # Set initial page to homepage
+    st.session_state.page = 'homepage'
 
 if st.session_state.page == 'eligibility':
-    # Code for eligibility page
     st.write("Welcome to the Eligibility Page!")
-    # You can include your eligibility code logic here.
-elif st.session_state.page == 'grant-calculator':
+    # Include eligibility logic here
+elif st.session_state.page == 'grant_calculator':
     st.write("Welcome to the Grant Calculator!")
-    # Include the calculator functionality here.
+    # Include calculator logic here
 elif st.session_state.page == 'button3':
     st.write("You clicked Button 3!")
 elif st.session_state.page == 'button4':
     st.write("You clicked Button 4!")
 else:
-    # Default to homepage
-    st.session_state.page = 'homepage'
-
-# Check if any button was clicked
-if st.button("Eligibility"):
-    st.session_state.page = 'eligibility'
-    st.experimental_rerun()  # Rerun the app to update the page
+    st.write("Welcome to the Homepage!")
 
