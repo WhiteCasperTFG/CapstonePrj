@@ -18,7 +18,7 @@ if not check_password():
 
 
 # Pass the API Key to the OpenAI Client
-client = OpenAI(api_key=OPENAI_KEY)
+# client = OpenAI(api_key=OPENAI_KEY)
 # Some other code here are omitted for brevity
 
 # Title of the app
