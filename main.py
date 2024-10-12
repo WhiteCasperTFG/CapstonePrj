@@ -1,18 +1,22 @@
-import streamlit as st
-import streamlit as st  
 from helper_functions.utility import check_password  
 from openai import OpenAI
 import os
+import streamlit as st
 from dotenv import load_dotenv
+from openai import OpenAI
+import tiktoken
 
-# Check if the password is correct.  
-if not check_password():  
-    st.stop()
 
-load_dotenv('proj.env')
-os.environ['OPENAI_MODEL_NAME'] = "gpt-4o-mini"
-API_KEY = os.getenv("OPENAI_API_KEY")
-client = OpenAI(api_kley=API_KEY)
+if load_dotenv('.env'):
+   # for local development
+   OPENAI_KEY = os.getenv('OPENAI_API_KEY')
+else:
+   OPENAI_KEY = st.secrets['OPENAI_API_KEY']
+
+
+# Pass the API Key to the OpenAI Client
+client = OpenAI(api_key=OPENAI_KEY)
+# Some other code here are omitted for brevity
 
 # Title of the app
 st.title("Streamlit Test App 2")
