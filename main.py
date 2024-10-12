@@ -5,6 +5,8 @@ st.set_page_config(page_title="Homepage", page_icon="🏠")
 
 # Use a background image
 background_image = "images/homepage.jpg"
+
+# Add custom CSS for the background image and button styling
 st.markdown(
     f"""
     <style>
@@ -23,6 +25,7 @@ st.markdown(
         display: flex;
         flex-direction: column;
         gap: 20px; /* Spacing between buttons */
+        align-items: center; /* Center buttons horizontally */
     }}
 
     .stButton {{
@@ -46,22 +49,24 @@ st.title("Welcome to the Grant Application Portal")
 with st.container():
     button_container = st.empty()
     with button_container:
-        if st.button("Eligibility", key="eligibility"):
-            st.session_state.page = "eligibility"  # Set the page to eligibility
-        if st.button("Grant Calculator", key="calc"):
-            st.session_state.page = "calculator"  # Set the page to the calculator
-        if st.button("Button 3", key="button3"):
-            st.session_state.page = "button3"
-        if st.button("Button 4", key="button4"):
-            st.session_state.page = "button4"
+        # Create the button container div with the button-container class
+        button_html = """
+        <div class="button-container">
+            <button class="stButton" onclick="window.location.href='/grant-calculator'">Grant Calculator</button>
+            <button class="stButton" onclick="window.location.href='/eligibility'">Eligibility</button>
+            <button class="stButton" onclick="window.location.href='/button3'">Button 3</button>
+            <button class="stButton" onclick="window.location.href='/button4'">Button 4</button>
+        </div>
+        """
+        st.markdown(button_html, unsafe_allow_html=True)
 
 # Display content based on the selected page
 if 'page' in st.session_state:
-    if st.session_state.page == "eligibility":
-        st.experimental_rerun()  # Refresh to show eligibility page
-    elif st.session_state.page == "calculator":
+    if st.session_state.page == "grant-calculator":
         st.write("Welcome to the Grant Calculator!")
         # Include the calculator functionality here.
+    elif st.session_state.page == "eligibility":
+        st.write("Eligibility information goes here!")
     elif st.session_state.page == "button3":
         st.write("You clicked Button 3!")
     elif st.session_state.page == "button4":
