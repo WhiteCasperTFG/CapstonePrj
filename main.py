@@ -5,7 +5,6 @@ import numpy as np
 # Function to calculate EHG (Enhanced CPF Housing Grant)
 def calculate_ehg(income, marital_status):
     if marital_status == 'Single':
-        # Singles get half of the family grant amount
         if income <= 1500:
             return 40000
         elif income <= 2000:
@@ -41,7 +40,6 @@ def calculate_ehg(income, marital_status):
         else:
             return 0
     elif marital_status == 'Married':
-        # Family calculation
         if income <= 1500:
             return 80000
         elif income <= 2000:
@@ -83,7 +81,6 @@ def calculate_ehg(income, marital_status):
 def calculate_cpf_grant(flat_size, first_time_buyer):
     if first_time_buyer == 'No':
         return 0  # Not eligible if not a first-time buyer
-    # Grant amounts based on flat size
     if flat_size == '4-room or smaller':
         return 50000  # Example grant for 4-room flats
     elif flat_size == '5-room':
@@ -100,13 +97,26 @@ def calculate_phg(proximity, buying_with_family):
 # Streamlit app interface
 st.title("HDB Resale Grant Eligibility & Estimator")
 
-# Input form for user details
+# Step 1: Display Step-by-Step Process Flow
+st.subheader("Buying Process Overview")
+st.write("""
+1. **Check Eligibility for Grants**
+2. **Determine Your Budget**
+3. **Search for Available Flats**
+4. **View and Shortlist Potential Flats**
+5. **Make an Offer**
+6. **Complete the Purchase Paperwork**
+7. **Finalize the Financing**
+8. **Move In**
+""")
+
+# Step 2: Input form for user details
 st.subheader("Provide Your Details")
 
-# Step 1: Marital Status
+# Step 3: Marital Status
 marital_status = st.selectbox("Marital Status", ['Married', 'Single'])
 
-# Step 2: Citizenship based on marital status
+# Step 4: Citizenship based on marital status
 citizenship = st.selectbox("Your Citizenship", ['Singaporean', 'Permanent Resident', 'Foreigner'])
 
 # Show "Your Spouse's Citizenship" only if married
@@ -114,14 +124,54 @@ spouse_citizenship = None  # Initialize with None
 if marital_status == 'Married':
     spouse_citizenship = st.selectbox("Your Spouse's Citizenship", ['Singaporean', 'Permanent Resident', 'Foreigner'])
 
-# Step 3: Other relevant details
+# Step 5: Other relevant details
 income = st.number_input("Household Monthly Income (SGD)", min_value=0, step=500)
 flat_size = st.selectbox("Flat Type", ['4-room or smaller', '5-room', 'Other'])
 first_time_buyer = st.radio("Are you a first-time buyer?", ['Yes', 'No'])
 proximity = st.radio("Do you live within 4km of your parents or children?", ['within 4km', 'more than 4km'])
 buying_with_family = st.radio("Are you buying the flat with family (parents/children)?", ['Yes', 'No'])
 
-# Submit button to process the inputs
+# Step 6: Display Grant Eligibility Criteria Visuals
+st.subheader("Grant Eligibility Criteria")
+st.write("### Enhanced CPF Housing Grant (EHG) Amounts based on Monthly Household Income:")
+st.write("""
+- **Single**:
+  - Income ≤ 1,500: SGD 40,000
+  - Income ≤ 2,000: SGD 37,500
+  - Income ≤ 2,500: SGD 35,000
+  - Income ≤ 3,000: SGD 32,500
+  - Income ≤ 3,500: SGD 30,000
+  - Income ≤ 4,000: SGD 27,500
+  - Income ≤ 4,500: SGD 25,000
+  - Income ≤ 5,000: SGD 22,500
+  - Income ≤ 5,500: SGD 20,000
+  - Income ≤ 6,000: SGD 17,500
+  - Income ≤ 6,500: SGD 15,000
+  - Income ≤ 7,000: SGD 12,500
+  - Income ≤ 7,500: SGD 10,000
+  - Income ≤ 8,000: SGD 7,500
+  - Income ≤ 8,500: SGD 5,000
+  - Income ≤ 9,000: SGD 2,500
+- **Married**:
+  - Income ≤ 1,500: SGD 80,000
+  - Income ≤ 2,000: SGD 75,000
+  - Income ≤ 2,500: SGD 70,000
+  - Income ≤ 3,000: SGD 65,000
+  - Income ≤ 3,500: SGD 60,000
+  - Income ≤ 4,000: SGD 55,000
+  - Income ≤ 4,500: SGD 50,000
+  - Income ≤ 5,000: SGD 45,000
+  - Income ≤ 5,500: SGD 40,000
+  - Income ≤ 6,000: SGD 35,000
+  - Income ≤ 6,500: SGD 30,000
+  - Income ≤ 7,000: SGD 25,000
+  - Income ≤ 7,500: SGD 20,000
+  - Income ≤ 8,000: SGD 15,000
+  - Income ≤ 8,500: SGD 10,000
+  - Income ≤ 9,000: SGD 5,000
+""")
+
+# Step 7: Submit button to process the inputs
 if st.button("Check Eligibility"):
     # Ineligibility checks
     ineligible_reasons = []
@@ -162,28 +212,41 @@ if st.button("Check Eligibility"):
         
         st.write(f"**Enhanced CPF Housing Grant (EHG)**: SGD {ehg}")
         st.write(f"**Proximity Housing Grant (PHG)**: SGD {phg}")
-
-        total_grant = ehg + cpf_grant + phg
-        st.write(f"**Total Estimated Grant Amount**: SGD {total_grant}")
-
-        # Visualization of grants
-        grant_data = {
-            'Grant Type': ['EHG', 'CPF Housing Grant', 'PHG'],
-            'Amount (SGD)': [ehg, cpf_grant, phg]
-        }
-        df_grants = pd.DataFrame(grant_data)
-        st.bar_chart(df_grants.set_index('Grant Type'))
-
-        # Suggestions for optimizing eligibility
-        if total_grant == 0:
-            if income == 0:
-                st.warning("You have a household income of SGD 0. You may still be eligible for some grants, especially if you are a first-time buyer. Consider reaching out to HDB for detailed assistance.")
-            else:
-                st.warning("You are not eligible for any grants. Consider adjusting your inputs (e.g., income, proximity) to see how it affects grant eligibility.")
-        else:
-            st.success(f"Based on your input, you could receive up to SGD {total_grant} in grants for your HDB resale flat purchase.")
     else:
         # Display ineligibility reasons
-        st.error("You are not eligible for HDB grants due to the following reasons:")
+        st.warning("You are not eligible for the following reasons:")
         for reason in ineligible_reasons:
             st.write(f"- {reason}")
+
+# Step 8: Display Financial Calculators
+st.subheader("Financial Calculators")
+
+# Example calculator for estimating monthly mortgage payments
+st.write("### Estimate Your Monthly Mortgage Payment")
+principal = st.number_input("Loan Amount (SGD)", min_value=0, step=5000)
+interest_rate = st.number_input("Interest Rate (Annual %)", min_value=0.0, max_value=100.0, step=0.1)
+loan_term = st.number_input("Loan Term (Years)", min_value=1, max_value=30, step=1)
+
+# Calculate and display monthly payment
+if st.button("Calculate Monthly Payment"):
+    monthly_interest_rate = interest_rate / 100 / 12
+    months = loan_term * 12
+    monthly_payment = (principal * monthly_interest_rate) / (1 - (1 + monthly_interest_rate) ** -months)
+    st.success(f"Estimated Monthly Payment: SGD {monthly_payment:.2f}")
+
+# Comparison Chart
+st.subheader("Comparison of Grants")
+comparison_data = {
+    "Grant Type": ["Enhanced CPF Housing Grant (EHG)", "CPF Housing Grant", "Proximity Housing Grant (PHG)"],
+    "Eligibility": ["Based on income", "First-time buyer", "Based on proximity"],
+    "Amount (SGD)": [ehg, cpf_grant, phg]
+}
+comparison_df = pd.DataFrame(comparison_data)
+st.write(comparison_df)
+
+# Suggestions for further information
+st.subheader("Need More Information?")
+st.write("""
+- Visit the [HDB Official Website](https://www.hdb.gov.sg) for more details on eligibility criteria and grants.
+- Consult with a financial advisor for personalized financial planning.
+""")
