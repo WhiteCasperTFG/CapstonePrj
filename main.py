@@ -125,11 +125,10 @@ with st.form("grant_form"):
     marital_status = st.selectbox("Marital Status", ['Married', 'Single'])
 
     # Step 2: Citizenship based on marital status
-    if marital_status == 'Single':
-        citizenship = st.selectbox("Your Citizenship", ['Singaporean', 'PR'])
-        spouse_citizenship = None  # Not required for singles
-    else:
-        citizenship = st.selectbox("Your Citizenship", ['Singaporean', 'PR'])
+    citizenship = st.selectbox("Your Citizenship", ['Singaporean', 'PR'])
+    
+    spouse_citizenship = None  # Initialize with None
+    if marital_status == 'Married':
         spouse_citizenship = st.selectbox("Your Spouse's Citizenship", ['Singaporean', 'PR'])
     
     # Step 3: Other relevant details
