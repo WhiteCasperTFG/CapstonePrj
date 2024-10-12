@@ -118,30 +118,28 @@ def calculate_phg(proximity, buying_with_family, marital_status):
 st.title("HDB Resale Grant Eligibility & Estimator")
 
 # Input form for user details
-with st.form("grant_form"):
-    st.subheader("Provide Your Details")
-    
-    # Step 1: Marital Status
-    marital_status = st.selectbox("Marital Status", ['Married', 'Single'])
+st.subheader("Provide Your Details")
 
-    # Step 2: Citizenship based on marital status
-    citizenship = st.selectbox("Your Citizenship", ['Singaporean', 'PR'])
-    
-    spouse_citizenship = None  # Initialize with None
-    if marital_status == 'Married':
-        spouse_citizenship = st.selectbox("Your Spouse's Citizenship", ['Singaporean', 'PR'])
-    
-    # Step 3: Other relevant details
-    income = st.number_input("Household Monthly Income (SGD)", min_value=0, step=500)
-    flat_size = st.selectbox("Flat Type", ['4-room or smaller', '5-room', 'Other'])
-    first_time_buyer = st.radio("Are you a first-time buyer?", ['Yes', 'No'])
-    proximity = st.radio("Do you live within 4km of your parents or children?", ['within 4km', 'more than 4km'])
-    buying_with_family = st.radio("Are you buying the flat with family (parents/children)?", ['Yes', 'No'])
-    
-    submit = st.form_submit_button("Check Eligibility")
+# Step 1: Marital Status
+marital_status = st.selectbox("Marital Status", ['Married', 'Single'])
 
-# If the form is submitted, calculate eligibility and grants
-if submit:
+# Step 2: Citizenship based on marital status
+citizenship = st.selectbox("Your Citizenship", ['Singaporean', 'PR'])
+
+# Show "Your Spouse's Citizenship" only if married
+spouse_citizenship = None  # Initialize with None
+if marital_status == 'Married':
+    spouse_citizenship = st.selectbox("Your Spouse's Citizenship", ['Singaporean', 'PR'])
+
+# Step 3: Other relevant details
+income = st.number_input("Household Monthly Income (SGD)", min_value=0, step=500)
+flat_size = st.selectbox("Flat Type", ['4-room or smaller', '5-room', 'Other'])
+first_time_buyer = st.radio("Are you a first-time buyer?", ['Yes', 'No'])
+proximity = st.radio("Do you live within 4km of your parents or children?", ['within 4km', 'more than 4km'])
+buying_with_family = st.radio("Are you buying the flat with family (parents/children)?", ['Yes', 'No'])
+
+# Submit button to process the inputs
+if st.button("Check Eligibility"):
     # Calculate the grants
     ehg = calculate_ehg(income, marital_status)
     cpf_grant = calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship, spouse_citizenship)
