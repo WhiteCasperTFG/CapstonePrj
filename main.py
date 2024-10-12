@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import tiktoken
 
+# Check if the password is correct.  
+if not check_password():  
+    st.stop()
 
 if load_dotenv('.env'):
    # for local development
