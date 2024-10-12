@@ -16,6 +16,7 @@ st.markdown(
         background-repeat: no-repeat; /* No repeating */
         background-attachment: fixed; /* Fixed background */
         height: 100vh; /* Full viewport height */
+        background-color: rgba(255, 255, 255, 0.8); /* Fallback color for visibility */
     }}
     </style>
     """,
@@ -57,4 +58,3 @@ elif st.session_state.page == 'button4':
     st.write("You clicked Button 4!")
 else:
     st.write("Welcome to the Homepage!")
-
