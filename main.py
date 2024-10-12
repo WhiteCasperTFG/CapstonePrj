@@ -1,6 +1,7 @@
+# Streamlit app interface
 import streamlit as st
 
-# Function to calculate Enhanced CPF Housing Grant (EHG) based on income
+# Function to calculate EHG (Enhanced CPF Housing Grant)
 def calculate_ehg(income, marital_status):
     if marital_status == 'Single':
         # Singles get half of the family grant amount
@@ -75,43 +76,22 @@ def calculate_ehg(income, marital_status):
         else:
             return 0
 
-# Function to calculate CPF Housing Grant based on flat size and citizenship
-def calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship, spouse_citizenship=None):
-    if marital_status == 'Single':
-        if citizenship == 'Singaporean':
-            if first_time_buyer == 'Yes':
-                if flat_size == '4-room or smaller':
-                    return 25000
-                elif flat_size == '5-room':
-                    return 20000
-        else:
-            return 0  # Single PRs aren't eligible for CPF Housing Grants
+# Function to calculate CPF Housing Grant
+def calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship, spouse_citizenship):
+    if first_time_buyer == 'No':
+        return 0  # Not eligible if not a first-time buyer
+    # Grant amounts based on flat size
+    if flat_size == '4-room or smaller':
+        return 50000  # Example grant for 4-room flats
+    elif flat_size == '5-room':
+        return 30000  # Example grant for 5-room flats
     else:
-        if first_time_buyer == 'Yes':
-            if citizenship == 'Singaporean' and spouse_citizenship == 'Singaporean':
-                if flat_size == '4-room or smaller':
-                    return 50000
-                elif flat_size == '5-room':
-                    return 40000
-            elif citizenship == 'Singaporean' and spouse_citizenship == 'PR':
-                if flat_size == '4-room or smaller':
-                    return 40000
-                elif flat_size == '5-room':
-                    return 30000
-    return 0
+        return 0
 
-# Function to calculate Proximity Housing Grant based on proximity and marital status
-def calculate_phg(proximity, buying_with_family, marital_status):
-    if marital_status == 'Single':
-        if proximity == 'within 4km':
-            return 15000
-        elif buying_with_family:
-            return 10000
-    else:
-        if proximity == 'within 4km':
-            return 30000
-        elif buying_with_family:
-            return 20000
+# Function to calculate Proximity Housing Grant (PHG)
+def calculate_phg(proximity, buying_with_family):
+    if proximity == 'within 4km' and buying_with_family:
+        return 20000  # Example PHG amount
     return 0
 
 # Streamlit app interface
@@ -140,26 +120,57 @@ buying_with_family = st.radio("Are you buying the flat with family (parents/chil
 
 # Submit button to process the inputs
 if st.button("Check Eligibility"):
-    # Calculate the grants
-    ehg = calculate_ehg(income, marital_status)
-    cpf_grant = calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship, spouse_citizenship)
-    phg = calculate_phg(proximity, buying_with_family == 'Yes', marital_status)
-
-    # Display the results
-    st.subheader("Grant Eligibility Results")
-    if first_time_buyer == 'Yes':
-        st.write(f"**CPF Housing Grant**: SGD {cpf_grant}")
-    else:
-        st.write("You are not eligible for the CPF Housing Grant as you're not a first-time buyer.")
+    # Ineligibility checks
+    ineligible_reasons = []
     
-    st.write(f"**Enhanced CPF Housing Grant (EHG)**: SGD {ehg}")
-    st.write(f"**Proximity Housing Grant (PHG)**: SGD {phg}")
+    # Citizenship check
+    if citizenship != 'Singaporean':
+        ineligible_reasons.append("You must be a Singaporean citizen to qualify for HDB grants.")
     
-    total_grant = ehg + cpf_grant + phg
-    st.write(f"**Total Estimated Grant Amount**: SGD {total_grant}")
+    # Income check
+    income_limit = 8000  # Example limit for grant eligibility
+    if income > income_limit:
+        ineligible_reasons.append("Your household income exceeds the limit for grant eligibility.")
+    
+    # First-time buyer check
+    if first_time_buyer == 'No':
+        if flat_size != 'Other':
+            ineligible_reasons.append("You are not eligible for the CPF Housing Grant as you're not a first-time buyer.")
+    
+    # Spouse's citizenship check
+    if marital_status == 'Married' and spouse_citizenship != 'Singaporean':
+        ineligible_reasons.append("Both buyers must be Singaporean citizens to qualify for grants.")
+    
+    # Calculate grants if eligible
+    if not ineligible_reasons:
+        ehg = calculate_ehg(income, marital_status)
+        cpf_grant = calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship, spouse_citizenship)
+        phg = calculate_phg(proximity, buying_with_family == 'Yes')
 
-    # Suggestions for optimizing eligibility
-    if total_grant == 0:
-        st.warning("You are not eligible for any grants. Consider adjusting your inputs (e.g., income, proximity) to see how it affects grant eligibility.")
+        # Display the results
+        st.subheader("Grant Eligibility Results")
+        
+        if first_time_buyer == 'Yes':
+            st.write(f"**CPF Housing Grant**: SGD {cpf_grant}")
+        else:
+            st.write("You are not eligible for the CPF Housing Grant as you're not a first-time buyer.")
+        
+        st.write(f"**Enhanced CPF Housing Grant (EHG)**: SGD {ehg}")
+        st.write(f"**Proximity Housing Grant (PHG)**: SGD {phg}")
+
+        total_grant = ehg + cpf_grant + phg
+        st.write(f"**Total Estimated Grant Amount**: SGD {total_grant}")
+
+        # Suggestions for optimizing eligibility
+        if total_grant == 0:
+            if income == 0:
+                st.warning("You have a household income of SGD 0. You may still be eligible for some grants, especially if you are a first-time buyer. Consider reaching out to HDB for detailed assistance.")
+            else:
+                st.warning("You are not eligible for any grants. Consider adjusting your inputs (e.g., income, proximity) to see how it affects grant eligibility.")
+        else:
+            st.success(f"Based on your input, you could receive up to SGD {total_grant} in grants for your HDB resale flat purchase.")
     else:
-        st.success(f"Based on your input, you could receive up to SGD {total_grant} in grants for your HDB resale flat purchase.")
+        # Display ineligibility reasons
+        st.error("You are not eligible for HDB grants due to the following reasons:")
+        for reason in ineligible_reasons:
+            st.write(f"- {reason}")
