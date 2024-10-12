@@ -1,9 +1,29 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import openai  # Make sure to install openai library
 
 # Load grant amounts from CSV file
 grant_data = pd.read_csv('data/grant_amounts.csv')
+
+# Load API key from a file
+with open('api_key.txt', 'r') as f:
+    openai.api_key = f.read().strip()
+
+def get_llm_response(user_input):
+    # Create the prompt for the model
+    prompt = f"You are an assistant knowledgeable about HDB grants and home buying in Singapore. Answer the user's question: {user_input}"
+
+    # Call the OpenAI API
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",  # or the model you're using
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    # Extract and return the assistant's reply
+    return response.choices[0].message['content']
 
 # Function to calculate EHG (Enhanced CPF Housing Grant)
 def calculate_ehg(income, marital_status):
@@ -202,42 +222,25 @@ if st.button("Check Eligibility"):
             if income == 0:
                 st.warning("You have a household income of SGD 0. You may still be eligible for some grants, especially if you are a first-time buyer. Consider reaching out to HDB for detailed assistance.")
             else:
-                st.warning("You are not eligible for any grants. Consider adjusting your inputs (e.g., income, proximity) to see how it affects grant eligibility.")
+                st.warning("You are not eligible for any grants. Consider adjusting your inputs (e.g., income, marital status) and check your eligibility again.")
         else:
-            st.success(f"Based on your input, you could receive up to SGD {total_grant} in grants for your HDB resale flat purchase.")
+            st.success("Congratulations! You are eligible for grants. Review your financial planning to maximize your benefits.")
+
+        # Personalized Recommendations
+        st.subheader("Personalized Recommendations")
+        user_query = st.text_input("Ask for personalized advice (e.g., tips for buying a flat):")
+        if user_query:
+            recommendation = get_llm_response(user_query)
+            st.write(recommendation)
+
+        # Interactive Tutorials
+        st.subheader("Interactive Tutorials")
+        tutorial_topic = st.selectbox("Select a tutorial topic:", ["HDB Buying Process", "Grant Eligibility", "Financing Options"])
+        if st.button("Get Tutorial"):
+            tutorial_response = get_llm_response(f"Provide an interactive tutorial on {tutorial_topic}.")
+            st.write(tutorial_response)
+
     else:
-        # Display ineligibility reasons
-        st.error("You are not eligible for HDB grants due to the following reasons:")
+        st.error("You are not eligible for any grants:")
         for reason in ineligible_reasons:
             st.write(f"- {reason}")
-
-# Step 8: Display Financial Calculators
-st.subheader("Financial Calculators")
-
-# Example calculator for estimating monthly mortgage payments
-st.write("### Estimate Your Monthly Mortgage Payment")
-principal = st.number_input("Loan Amount (SGD)", min_value=0, step=1000)
-interest_rate = st.number_input("Annual Interest Rate (%)", min_value=0.0, max_value=100.0, step=0.1)
-loan_term = st.number_input("Loan Term (years)", min_value=1, step=1)
-
-if st.button("Calculate Mortgage Payment"):
-    # Check if interest rate is greater than 0 to avoid division by zero
-    if interest_rate > 0:
-        monthly_rate = interest_rate / 100 / 12
-        num_payments = loan_term * 12
-        mortgage_payment = (principal * monthly_rate) / (1 - (1 + monthly_rate) ** -num_payments)
-        st.write(f"Estimated Monthly Mortgage Payment: SGD {mortgage_payment:.2f}")
-    else:
-        # If the interest rate is 0, the payment will just be the principal divided by the loan term in months
-        if principal > 0:
-            mortgage_payment = principal / (loan_term * 12)
-            st.write(f"Estimated Monthly Mortgage Payment: SGD {mortgage_payment:.2f} (0% interest rate)")
-        else:
-            st.write("Please enter a valid loan amount to calculate the monthly payment.")
-
-# Step 9: Additional Resources and Links
-st.subheader("Helpful Resources")
-st.write("Here are some resources for additional information on HDB grants and buying flats:")
-st.write("- [HDB Website](https://www.hdb.gov.sg)")
-st.write("- [CPF Housing Grant Information](https://www.cpf.gov.sg)")
-st.write("- [Financial Planning Tools](https://www.moneysmart.sg)")
