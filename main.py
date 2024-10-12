@@ -221,10 +221,19 @@ interest_rate = st.number_input("Annual Interest Rate (%)", min_value=0.0, max_v
 loan_term = st.number_input("Loan Term (years)", min_value=1, step=1)
 
 if st.button("Calculate Mortgage Payment"):
-    monthly_rate = interest_rate / 100 / 12
-    num_payments = loan_term * 12
-    mortgage_payment = (principal * monthly_rate) / (1 - (1 + monthly_rate) ** -num_payments)
-    st.write(f"Estimated Monthly Mortgage Payment: SGD {mortgage_payment:.2f}")
+    # Check if interest rate is greater than 0 to avoid division by zero
+    if interest_rate > 0:
+        monthly_rate = interest_rate / 100 / 12
+        num_payments = loan_term * 12
+        mortgage_payment = (principal * monthly_rate) / (1 - (1 + monthly_rate) ** -num_payments)
+        st.write(f"Estimated Monthly Mortgage Payment: SGD {mortgage_payment:.2f}")
+    else:
+        # If the interest rate is 0, the payment will just be the principal divided by the loan term in months
+        if principal > 0:
+            mortgage_payment = principal / (loan_term * 12)
+            st.write(f"Estimated Monthly Mortgage Payment: SGD {mortgage_payment:.2f} (0% interest rate)")
+        else:
+            st.write("Please enter a valid loan amount to calculate the monthly payment.")
 
 # Step 9: Additional Resources and Links
 st.subheader("Helpful Resources")
