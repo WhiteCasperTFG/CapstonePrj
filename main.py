@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+import numpy as np
 
 # Function to calculate EHG (Enhanced CPF Housing Grant)
 def calculate_ehg(income, marital_status):
@@ -78,7 +80,7 @@ def calculate_ehg(income, marital_status):
         return 0
 
 # Function to calculate CPF Housing Grant
-def calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship, spouse_citizenship):
+def calculate_cpf_grant(flat_size, first_time_buyer):
     if first_time_buyer == 'No':
         return 0  # Not eligible if not a first-time buyer
     # Grant amounts based on flat size
@@ -147,7 +149,7 @@ if st.button("Check Eligibility"):
     # Calculate grants if eligible
     if not ineligible_reasons:
         ehg = calculate_ehg(income, marital_status)
-        cpf_grant = calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship, spouse_citizenship)
+        cpf_grant = calculate_cpf_grant(flat_size, first_time_buyer)
         phg = calculate_phg(proximity, buying_with_family == 'Yes')
 
         # Display the results
@@ -163,6 +165,14 @@ if st.button("Check Eligibility"):
 
         total_grant = ehg + cpf_grant + phg
         st.write(f"**Total Estimated Grant Amount**: SGD {total_grant}")
+
+        # Visualization of grants
+        grant_data = {
+            'Grant Type': ['EHG', 'CPF Housing Grant', 'PHG'],
+            'Amount (SGD)': [ehg, cpf_grant, phg]
+        }
+        df_grants = pd.DataFrame(grant_data)
+        st.bar_chart(df_grants.set_index('Grant Type'))
 
         # Suggestions for optimizing eligibility
         if total_grant == 0:
