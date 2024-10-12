@@ -5,16 +5,21 @@ import streamlit as st
 from dotenv import load_dotenv
 from openai import OpenAI
 import tiktoken
+OPENAI_KEY = st.secrets["OPENAI_API_KEY"]
+PASSWORD = st.secrets["password"]
 
-# Check if the password is correct.  
-if not check_password():  
-    st.stop()
+# Check if the values are being loaded correctly
+st.write("OpenAI API Key loaded successfully!")
+st.write("Password loaded successfully!")
+# # Check if the password is correct.  
+# if not check_password():  
+#     st.stop()
 
-if load_dotenv('.env'):
-   # for local development
-   OPENAI_KEY = os.getenv('OPENAI_API_KEY')
-else:
-   OPENAI_KEY = st.secrets['OPENAI_API_KEY']
+# if load_dotenv('.env'):
+#    # for local development
+#    OPENAI_KEY = os.getenv('OPENAI_API_KEY')
+# else:
+#    OPENAI_KEY = st.secrets['OPENAI_API_KEY']
 
 
 # Pass the API Key to the OpenAI Client
