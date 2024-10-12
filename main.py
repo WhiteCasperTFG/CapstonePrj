@@ -1,4 +1,18 @@
 import streamlit as st
+import streamlit as st  
+from helper_functions.utility import check_password  
+from openai import OpenAI
+import os
+from dotenv import load_dotenv
+
+# Check if the password is correct.  
+if not check_password():  
+    st.stop()
+
+load_dotenv('proj.env')
+os.environ['OPENAI_MODEL_NAME'] = "gpt-4o-mini"
+API_KEY = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_kley=API_KEY)
 
 # Title of the app
 st.title("Streamlit Test App")
