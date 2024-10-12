@@ -1,10 +1,8 @@
-# Streamlit app interface
 import streamlit as st
 
-# Function to calculate EHG (Enhanced CPF Housing Grant)
+# Function to calculate Enhanced CPF Housing Grant (EHG)
 def calculate_ehg(income, marital_status):
     if marital_status == 'Single':
-        # Singles get half of the family grant amount
         if income <= 1500:
             return 40000
         elif income <= 2000:
@@ -40,7 +38,6 @@ def calculate_ehg(income, marital_status):
         else:
             return 0
     elif marital_status == 'Married':
-        # Family calculation
         if income <= 1500:
             return 80000
         elif income <= 2000:
@@ -93,7 +90,7 @@ def calculate_cpf_grant(flat_size, first_time_buyer, marital_status, citizenship
 # Function to calculate Proximity Housing Grant (PHG)
 def calculate_phg(proximity, buying_with_family):
     if proximity == 'within 4km' and buying_with_family:
-        return 20000  # Example PHG amount
+        return 30000  # Example PHG amount
     return 0
 
 # Streamlit app interface
@@ -174,3 +171,13 @@ if st.button("Check Eligibility"):
         st.error("You are not eligible for HDB grants due to the following reasons:")
         for reason in ineligible_reasons:
             st.write(f"- {reason}")
+
+    # Important notes about non-first-time buyer scenarios
+    st.markdown("""
+    ### Important Considerations for Non-First-Time Buyers:
+    - **Proximity Housing Grant (PHG)**: Non-first-time buyers can qualify if buying a resale flat to live near their parents or children (up to SGD 30,000).
+    - **Family Grant**: Available to couples buying a resale flat together, even if one partner has previously owned a flat.
+    - **Enhanced Housing Grant (EHG)**: Certain conditions may allow non-first-time buyers to qualify if they meet specific income criteria.
+    - **Mature Estate Grant**: May be available for resale flats in mature estates, subject to family status requirements.
+    """)
+
