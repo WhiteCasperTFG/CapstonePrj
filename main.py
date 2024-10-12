@@ -139,10 +139,10 @@ if st.button("Check Eligibility"):
     if first_time_buyer == 'No':
         if flat_size != 'Other':
             ineligible_reasons.append("You are not eligible for the CPF Housing Grant as you're not a first-time buyer.")
-        
-        # Only add Family Grant ineligibility for married users
+
+        # Adjusted Family Grant ineligibility logic
         if marital_status == 'Married' and buying_with_family == 'No':
-            ineligible_reasons.append("You are not eligible for the Family Grant as you are not buying with family.")
+            ineligible_reasons.append("You are not eligible for the Family Grant as you must be purchasing with parents or children to qualify.")
 
     # Calculate grants if eligible
     if not ineligible_reasons:
